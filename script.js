@@ -27,101 +27,148 @@ Características Adicionales:
 Fecha de Entrega: Sábado 22 de junio a las 9:00 am
 */
 
-// Lógica 
-const options = ['rock', 'paper', 'scissors'];
-let playerWins = 0;
-let machineWins = 0;
-let attempts = 3;  // Default number of attempts
 
-document.getElementById('play-vs-machine').addEventListener('click', () => startGame('machine'));
-document.getElementById('options-two-players').addEventListener('click', showPlayerInfo);
-document.getElementById('start-new-game').addEventListener('click', startTwoPlayerGame);
-document.getElementById('new-game').addEventListener('click', resetGame);
+// script.js
 
-function showPlayerInfo() {
-    document.querySelector('.players-information').style.display = 'flex';
-}
+document.addEventListener("DOMContentLoaded", () => {
+    const playVsMachineButton = document.getElementById('play-vs-machine');
+    const optionsTwoPlayersButton = document.getElementById('options-two-players');
+    const startNewGameButton = document.getElementById('start-new-game');
+    const newGameButton = document.getElementById('new-game');
 
-function startGame(mode) {
-    document.querySelector('.inicialization').style.display = 'none';
-    document.querySelector('.main-content').style.display = 'flex';
-    if (mode === 'machine') {
-        document.querySelector('.second-player').style.display = 'none';
-    }
-}
+    const playerOneInput = document.getElementById('player-one');
+    const playerTwoInput = document.getElementById('player-two');
+    
+    const overlay = document.getElementById('overlay');
+    const playerOneOptions = document.querySelectorAll('.first-player .options button');
+    const playerTwoOptions = document.querySelectorAll('.second-player .options button');
+    const resultDisplay = document.getElementById('result');
+    const leaderDisplay = document.getElementById('leader');
 
-function startTwoPlayerGame() {
-    const player1 = document.getElementById('player-one').value;
-    const player2 = document.getElementById('player-two').value;
-    if (player1 && player2) {
-        document.querySelector('.players-information').style.display = 'none';
-        document.querySelector('.main-content').style.display = 'flex';
-    } else {
-        alert('Please enter names for both players.');
-    }
-}
+    const playerOneRadioButtons = document.querySelectorAll('input[name="player-win"]')
+    const playerTwoRadioButtons = document.querySelectorAll('input[name="machine-win"]')
+    
+    let gameMode = '';
+    let playerOneName = '';
+    let playerTwoName = 'Machine';
+    let playerOneChoice = '';
+    let playerTwoChoice = '';
+    let playerOneScore = 0;
+    let playerTwoScore = 0;
 
-function resetGame() {
-    playerWins = 0;
-    machineWins = 0;
-    attempts = 3;
-    updateScoreboard();
-    document.getElementById('result').textContent = '';
-    document.querySelector('.inicialization').style.display = 'flex';
-    document.querySelector('.main-content').style.display = 'none';
-    document.querySelector('.players-information').style.display = 'none';
-}
+    playVsMachineButton.addEventListener('click', () => {
+        gameMode = 'vsMachine';
+        startGameSetup();
+    });
 
-function getRandomChoice() {
-    const random = Math.floor(Math.random() * options.length);
-    return options[random];
-}
+    optionsTwoPlayersButton.addEventListener('click', () => {
+        gameMode = 'multiplayer';
+        startGameSetup();
+    });
 
-function winner(playerChoice, machineChoice) {
-    if (playerChoice === machineChoice) {
-        return 'draw';
-    }
-    if (
-        (playerChoice === 'rock' && machineChoice === 'scissors') ||
-        (playerChoice === 'paper' && machineChoice === 'rock') ||
-        (playerChoice === 'scissors' && machineChoice === 'paper')
-    ) {
-        playerWins++;
-        return 'You won';
-    } else {
-        machineWins++;
-        return 'Machine won';
-    }
-}
+    startNewGameButton.addEventListener('click', startGame);
 
-function playGame(playerChoice) {
-    if (attempts > 0) {
-        attempts--;
-        const machineChoice = getRandomChoice();
-        const result = winner(playerChoice, machineChoice);
-        const resultDiv = document.getElementById('result');
-        resultDiv.textContent = `You chose ${playerChoice}, machine chose ${machineChoice}. ${result}`;
-        updateScoreboard();
-        if (attempts === 0) {
-            alert('Game over!');
+    newGameButton.addEventListener('click', () => {
+        overlay.style.display = 'flex';
+        resetGame();
+    });
+
+    function startGameSetup() {
+        if(gameMode === 'vsMachine'){
+            document.getElementById('player-two').parentElement.style.display = 'none';
+        } else{
+            document.getElementById('player-two').parentElement.style.display = 'block';
         }
-    } else {
-        alert('No more attempts left!');
+        document.querySelector('.players-information').style.display = 'block';
     }
-}
 
-function updateScoreboard() {
-    document.getElementById('player-score').textContent = playerWins;
-    document.getElementById('machine-score').textContent = machineWins;
-    let leader = 'It\'s a tie';
-    if (playerWins > machineWins) {
-        leader = 'Player is leading';
-    } else if (machineWins > playerWins) {
-        leader = 'Machine is leading';
+    function startGame() {
+        playerOneName = playerOneInput.value || 'Player 1';
+        if(gameMode === 'Multiplayer'){
+            playerTwoName = playerTwoInput.value || 'Player 2';
+        }
+        overlay.style.display = 'none';
+        initializeGame();
     }
-    document.getElementById('leader').textContent = leader;
-}
 
-document.getElementById('first-rock').addEventListener('click', () => playGame('rock'));
-document.getElementById('first-paper').addEventListener('click', () => playGame('paper'));
-document.getElementById('first-scissors').addEventListener('click', () => playGame('scissors'));
+    function initializeGame() {
+        playerOneOptions.forEach(button => {
+            button.addEventListener('click', () => {
+                playerOneChoice = button.id.replace('first-', '');
+                if (gameMode === 'vsMachine') {
+                    playerTwoChoice = getRandomChoice();
+                    determineWinner();
+                }
+            });
+        });
+
+        if (gameMode === 'multiplayer') {
+            playerTwoOptions.forEach(button => {
+                button.addEventListener('click', () => {
+                    playerTwoChoice = button.id.replace('second-', '');
+                    determineWinner();
+                });
+            });
+        }
+    }
+
+    function getRandomChoice() {
+        const choices = ['rock', 'paper', 'scissors'];
+        return choices[Math.floor(Math.random() * choices.length)];
+    }
+
+    function determineWinner() {
+        if (!playerOneChoice || !playerTwoChoice) return;
+
+        let result = '';
+        if (playerOneChoice === playerTwoChoice) {
+            result = 'It\'s a tie!';
+        } else if (
+            (playerOneChoice === 'rock' && playerTwoChoice === 'scissors') ||
+            (playerOneChoice === 'paper' && playerTwoChoice === 'rock') ||
+            (playerOneChoice === 'scissors' && playerTwoChoice === 'paper')
+        ) {
+            result = `${playerOneName} wins!`;
+            playerOneScore++;
+        } else {
+            result = `${playerTwoName} wins!`;
+            playerTwoScore++;
+        }
+
+        resultDisplay.innerText = result;
+        updateScoreboard(result);
+        resetChoices();
+    }
+
+    function updateScoreboard(result) {
+        if(playerOneScore <= playerOneRadioButtons.length){
+            playerOneRadioButtons[playerOneScore -1].checked = true;
+        }
+        if(playerTwoScore <= playerTwoRadioButtons.length){
+            playerTwoRadioButtons[playerTwoScore -1].checked = true;
+        }
+
+        if(playerOneScore >= 2){
+            leaderDisplay.innerText =  `${playerOneName} is the overall winner!`;
+            disableGame();
+        }else if (playerTwoScore >= 2){
+            leaderDisplay.innerText = `${playerTwoName} is the overall winner!`;
+            disableGame();
+        }
+    }
+
+    function resetChoices() {
+        playerOneChoice = '';
+        playerTwoChoice = '';
+    }
+
+    function resetGame() {
+        playerOneChoice = '';
+        playerTwoChoice = '';
+        resultDisplay.innerText = '';
+        leaderDisplay.innerText = '';
+        playerOneInput.value = '';
+        playerTwoInput.value = '';
+        document.querySelector('.players-information').style.display = 'none';
+    }
+});
