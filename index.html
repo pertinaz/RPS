@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RPS</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="/style.css">
+    <script src="/script.js"></script>
+</head>
+
+<body>
+    <header>
+        <nav>
+            <h1>ROCK PAPER SCISSORS</h1>
+        </nav>
+    </header>
+    <div id="overlay" class="overlay">
+        <div class="inicialization">
+            <button id="play-vs-machine">Play VS machine</button>
+            <button id="options-two-players">Multiplayer</button>
+    
+            <div class="players-information">
+                <form class="players">
+                    <label for="player-one">Player 1: </label>
+                    <input type="text" id="player-one" required>
+                </form>
+                <form class="players">
+                    <label for="player-two">Player 2: </label>
+                    <input type="text" id="player-two" required>
+                </form>
+                <button id="start-new-game">Start</button>
+            </div>
+        </div>
+    </div>
+    <main>
+        <div class="main-content">
+            <div class="first-player">
+                <div class="stats-counter">
+
+                </div>
+                <div class="first-player visuals">
+                    <i class="fa-solid fa-hands fa-flip-horizontal"></i>
+                </div>
+                <div class="options">
+                    <button class="options" id="first-rock"><i class="fa-solid fa-hand-fist fa-bounce"></i></button>
+                    <button class="options" id="first-paper"><i class="fa-solid fa-hand fa-bounce"></i></button>
+                    <button class="options" id="first-scissors"><i class="fa-solid fa-hand-scissors fa-bounce"></i></button>
+                </div>
+            </div>
+
+            <div class="scoreboard">
+                <input type="radio" id="player-score" name="player-win">
+                <label for="player-score"></label>
+                <input type="radio" id="player-score" name="player-win">
+                <label for="player-score"></label>
+                <input type="radio" id="player-score" name="player-win">
+                <label for="player-score"></label>
+                <br>
+                <input type="radio" id="machine-score" name="machine-win">
+                <label for="machine-score"></label>
+                <input type="radio" id="machine-score" name="machine-win">
+                <label for="machine-score"></label>
+                <input type="radio" id="machine-score" name="machine-win">
+                <label for="machine-score"></label>
+            </div>
+            <div id="leader"></div>
+
+            <div class="second-player">
+                <div class="stats-counter">
+
+                </div>
+                <div class="second-player visuals">
+                    <i class="fa-solid fa-hands fa-bounce"></i>
+                </div>
+                <div class="options">
+                    <button class="options" id="second-rock"><i class="fa-solid fa-hand-fist fa-bounce"></i></button>
+                    <button class="options" id="second-paper"><i class="fa-solid fa-hand fa-bounce"></i></button>
+                    <button class="options" id="second-scissors"><i class="fa-solid fa-hand-scissors fa-bounce"></i></button>
+                </div>
+            </div>
+        </div>
+        <div id="result"></div>
+        <div class="new-game">
+            <button id="new-game">New game</button>
+        </div>
+    </main>
+    <footer>
+        <span>Design by Czsgt</span>
+    </footer>
+</body>
+
+</html>
